@@ -9,8 +9,11 @@ import os
 PORT = 8888
 HOST = 'localhost'
 
-MESSAGE_FOLDER = os.path.expanduser('~/BTSync/bitmessage/')
+MESSAGE_FOLDER = os.path.abspath('_messages')
 FILENAME_FORMAT = '%Y-%m-%dT%H-%M-%SZ.txt'
+
+if not os.path.exists(MESSAGE_FOLDER):
+    os.mkdir(MESSAGE_FOLDER)
 
 
 @get('/')
@@ -37,7 +40,7 @@ def newMessage():
 def discoverContacts():
     contacts = []
     for item in os.listdir(MESSAGE_FOLDER):
-        if os.path.isdir(os.path.join(MESSAGE_FOLDER, item)):
+        if os.path.isdir(os.path.join(MESSAGE_FOLDER, item)) and item[0] != '.':
             contacts.append(item)
     return contacts
 
