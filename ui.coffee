@@ -43,7 +43,7 @@ renderMessagesFor = (contact_messages) ->
 
 
 
-activateContact = (contact) ->
+activateContact = (contact, messages) ->
     els.new_message_contact.value = contact
     els.new_message_contact.removeAttribute('disabled')
     els.new_message_body.removeAttribute('disabled')
@@ -122,15 +122,18 @@ for contact, messages of window.DATA
     contact_el = _makeEl('li')
     contact_el._text(contact)
     els.contact_list.appendChild(contact_el)
-    contact_el.onclick = ->
-        localStorage.setItem('active_contact', contact)
-        activateContact(contact)
+    do ->
+        this_contact = contact
+        this_messages = messages
+        contact_el.onclick = ->
+            localStorage.setItem('active_contact', this_contact)
+            activateContact(this_contact, this_messages)
 
 
 
 do ->
     prev_active_contact = localStorage.getItem('active_contact')
     if prev_active_contact
-        activateContact(prev_active_contact)
+        activateContact(prev_active_contact, window.DATA[prev_active_contact])
 
 
