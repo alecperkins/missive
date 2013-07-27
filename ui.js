@@ -47,14 +47,16 @@
     _ref = ['inbox', 'outbox'];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       box = _ref[_i];
-      _ref1 = contact_messages[box];
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        m = _ref1[_j];
-        messages.push({
-          date: new Date(m.date),
-          body: m.body,
-          box: box
-        });
+      if (contact_messages[box] != null) {
+        _ref1 = contact_messages[box];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          m = _ref1[_j];
+          messages.push({
+            date: new Date(m.date),
+            body: m.body,
+            box: box
+          });
+        }
       }
     }
     messages.sort(function(a, b) {
@@ -111,7 +113,7 @@
 
   style_el = _makeEl('style');
 
-  style_el._html("#left_panel {\n    float: left;\n    width: 200px;\n}\n#right_panel {\n    float: right;\n    width: calc(100% - 200px);\n}\n#new_message_contact, #new_message_body {\n    display: block;\n    width: 100%;\n}\n#submit_message {\n    float: right;\n}\n#contact_list li {\n    cursor      : pointer;\n}\n#contact_list li:hover {\n    background  : rgba(240,240,240,1);\n}\n#message_list {\n    margin-top  : 2em;\n}\n#message_list li {\n    clear       : both;\n    padding     : 0.5em 1em;\n}\n#message_list li.inbox {\n    background  : rgba(240,255,240,1);\n}\n#message_list li.outbox {\n    background  : rgba(240,240,255,1);\n}\n#message_list time {\n    float       : right;\n    color       : #888;\n}\n#message_list p {\n    margin      : 0;\n}");
+  style_el._html("#left_panel {\n    float: left;\n    width: 200px;\n}\n#right_panel {\n    float: right;\n    width: calc(100% - 200px);\n}\n#new_message_contact, #new_message_body {\n    display: block;\n    width: 100%;\n}\n#submit_message {\n    float: right;\n}\n#contact_list li {\n    cursor      : pointer;\n}\n#contact_list li.inbox {\n    background  : rgba(240,255,240,1);\n}\n#contact_list li.outbox {\n    background  : rgba(240,240,255,1);\n}\n#contact_list li.inbox.outbox {\n    background  : rgba(240,240,240,0.3)\n}\n#contact_list li:hover {\n    background  : rgba(240,240,240,1) !important;\n}\n#message_list {\n    margin-top  : 2em;\n}\n#message_list li {\n    clear       : both;\n    padding     : 0.5em 1em;\n}\n#message_list li.inbox {\n    background  : rgba(240,255,240,1);\n}\n#message_list li.outbox {\n    background  : rgba(240,240,255,1);\n}\n#message_list time {\n    float       : right;\n    color       : #888;\n}\n#message_list p {\n    margin      : 0;\n}");
 
   document.body.appendChild(style_el);
 
@@ -131,6 +133,12 @@
     contact_el = _makeEl('li');
     contact_el._text(contact);
     els.contact_list.appendChild(contact_el);
+    if (messages.inbox != null) {
+      contact_el.classList.add('inbox');
+    }
+    if (messages.outbox != null) {
+      contact_el.classList.add('outbox');
+    }
     _fn();
   }
 

@@ -17,15 +17,15 @@ _makeEl = (tag_name, kwargs={}) ->
 
 
 
-
 renderMessagesFor = (contact_messages) ->
     messages = []
     for box in ['inbox', 'outbox']
-        for m in contact_messages[box]
-            messages.push
-                date    : new Date(m.date)
-                body    : m.body
-                box     : box
+        if contact_messages[box]?
+            for m in contact_messages[box]
+                messages.push
+                    date    : new Date(m.date)
+                    body    : m.body
+                    box     : box
     messages.sort (a,b) -> b.date - a.date
 
     els.message_list.innerHTML = ''
@@ -90,8 +90,17 @@ style_el._html """
 #contact_list li {
     cursor      : pointer;
 }
+#contact_list li.inbox {
+    background  : rgba(240,255,240,1);
+}
+#contact_list li.outbox {
+    background  : rgba(240,240,255,1);
+}
+#contact_list li.inbox.outbox {
+    background  : rgba(240,240,240,0.3)
+}
 #contact_list li:hover {
-    background  : rgba(240,240,240,1);
+    background  : rgba(240,240,240,1) !important;
 }
 #message_list {
     margin-top  : 2em;
@@ -122,6 +131,10 @@ for contact, messages of window.DATA
     contact_el = _makeEl('li')
     contact_el._text(contact)
     els.contact_list.appendChild(contact_el)
+    if messages.inbox?
+        contact_el.classList.add('inbox')
+    if messages.outbox?
+        contact_el.classList.add('outbox')
     do ->
         this_contact = contact
         this_messages = messages

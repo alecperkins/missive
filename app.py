@@ -48,6 +48,8 @@ def loadMessagesFor(contact):
     def load(box):
         messages = []
         box_folder = os.path.join(MESSAGE_FOLDER, contact, box)
+        if not os.path.exists(box_folder):
+            return None
         for item in os.listdir(box_folder):
             full_path = os.path.join(box_folder, item)
             if os.path.isfile(full_path) and item[0] != '.':
