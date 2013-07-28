@@ -15,6 +15,9 @@ class Panel extends Backbone.View
             left: @layout.left
             top: @layout.top
             background: @layout.background
+            overflow: 'scroll'
+            'transition-property': 'all'
+            'transition-duration': '0.1s'
 
     setContent: (contents) ->
         @$el.empty()
@@ -55,7 +58,6 @@ class Layout extends Backbone.View
 
 
     resize: =>
-        console.log 'Layout.resize'
         window_width = $(window).width()
         window_height = $(window).height()
         if not @row_first
@@ -104,12 +106,15 @@ class Layout extends Backbone.View
                 w_so_far += w
             h_so_far += h
 
-    getPanel: (i, j) ->
+    getPanel: (i, j) =>
         return @panels[i][j]
 
-    setPanelContent: (i, j, contents...) ->
+    setPanelContent: (i, j, contents...) =>
         @panels[i][j].setContent(contents)
 
+    setPanelSize: (i, j, dim) =>
+        @layout[i][1][j] = dim
+        @resize()
 
 # layout = new Layout
 #     el: $('#app')
