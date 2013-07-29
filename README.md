@@ -4,7 +4,7 @@ A basic proof-of-concept of [BitTorrent Sync](http://labs.bittorrent.com/experim
 
 ## Mechanism
 
-Each contact (*message channel*) gets a folder that contains and inbox folder and an outbox folder. The user adds the outbox for the contact to BT Sync as a master folder, and gives the recipient the read-only key. The other party then gives them a read-only key for their outbox, which the user uses to add the channel inbox to BT Sync. It can also be used in a one-to-many capacity, through a *broadcast channel*, simply by sharing the read-only key to an outbox more widely. Likewise, users create *subscription channels* (the other end of the *broadcast* ones), by adding only an inbox to the channel’s folder.
+Each contact — *message channel* — gets a folder that contains and inbox folder and an outbox folder. The user adds the outbox for the contact to BT Sync as a master folder, and gives the recipient the read-only key. The other party then gives the user a read-only key for their outbox, which the user uses to add the channel inbox to BT Sync. It can also be used in a one-to-many capacity, through a *broadcast channel*, simply by sharing the read-only key to an outbox more widely. Likewise, users create *subscription channels* (the other end of the *broadcast* ones), by adding only an inbox to the channel’s folder.
 
 
 ## Installation
