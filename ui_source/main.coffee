@@ -13,6 +13,7 @@ class Channel extends Model
         $.post @get('messages_url'), { body: body }, (success) ->
             active_channel_messages.fetch()
             cb()
+
     getType: ->
         if @get('has_inbox')
             if @get('has_outbox')
@@ -67,10 +68,10 @@ class MessageListItem extends ListItem
             return "#{ d.getFullYear() }-#{ d.getMonth() + 1 }-#{ d.getDate() } #{ d.getHours() }:#{ _pad(d.getMinutes()) }:#{ _pad(d.getSeconds()) }"
 
         @$el.html """
+            <time datetime="#{ @model.get('date') }">#{ _format(@model.get('date')) }</time>
             <div class="body">
                 #{ markdown.toHTML(@model.get('body')) }
             </div>
-            <time datetime="#{ @model.get('date') }">#{ _format(@model.get('date')) }</time>
         """
         return @el
 
@@ -191,12 +192,16 @@ setUpInterface = ->
 
     $('#app').html """
         <div id="panel_channels">
+            <div class="label">Messages</div>
             <ul id="channel_messages"></ul>
+
+            <div class="label">Broadcasts</div>
             <ul id="channel_broadcasts"></ul>
+            
+            <div class="label">Subscriptions</div>
             <ul id="channel_subscriptions"></ul>
         </div>
         <div id="panel_messages">
-            <h1 id="channel_title"></h1>
             <div id="new_message_form"></div>
             <ul id="channel_messages_list"></ul>
         </div>

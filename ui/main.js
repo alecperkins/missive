@@ -142,7 +142,7 @@
         };
         return "" + (d.getFullYear()) + "-" + (d.getMonth() + 1) + "-" + (d.getDate()) + " " + (d.getHours()) + ":" + (_pad(d.getMinutes())) + ":" + (_pad(d.getSeconds()));
       };
-      this.$el.html("<div class=\"body\">\n    " + (markdown.toHTML(this.model.get('body'))) + "\n</div>\n<time datetime=\"" + (this.model.get('date')) + "\">" + (_format(this.model.get('date'))) + "</time>");
+      this.$el.html("<time datetime=\"" + (this.model.get('date')) + "\">" + (_format(this.model.get('date'))) + "</time>\n<div class=\"body\">\n    " + (markdown.toHTML(this.model.get('body'))) + "\n</div>");
       return this.el;
     };
 
@@ -320,7 +320,7 @@
   })(View);
 
   setUpInterface = function() {
-    $('#app').html("<div id=\"panel_channels\">\n    <ul id=\"channel_messages\"></ul>\n    <ul id=\"channel_broadcasts\"></ul>\n    <ul id=\"channel_subscriptions\"></ul>\n</div>\n<div id=\"panel_messages\">\n    <h1 id=\"channel_title\"></h1>\n    <div id=\"new_message_form\"></div>\n    <ul id=\"channel_messages_list\"></ul>\n</div>");
+    $('#app').html("<div id=\"panel_channels\">\n    <div class=\"label\">Messages</div>\n    <ul id=\"channel_messages\"></ul>\n\n    <div class=\"label\">Broadcasts</div>\n    <ul id=\"channel_broadcasts\"></ul>\n    \n    <div class=\"label\">Subscriptions</div>\n    <ul id=\"channel_subscriptions\"></ul>\n</div>\n<div id=\"panel_messages\">\n    <div id=\"new_message_form\"></div>\n    <ul id=\"channel_messages_list\"></ul>\n</div>");
     new ListView({
       collection: channel_collection,
       el: $('#channel_messages'),

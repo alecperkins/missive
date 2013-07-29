@@ -1,8 +1,14 @@
 body {
-    background: #f8f8f8;
+    background: white;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    font-weight: 300;
 }
+
+.StringInput-input, #channel_messages_list .body {
+    font-family: Georgia, serif;
+}
+
 .StringInput-input {
-    font-size: 1.1em;
     padding: 0.5em;
     resize: none;
     color: #111111;
@@ -12,3 +18,77 @@ body {
     margin: 0;
     float: right;
 }
+
+#channel_messages_list .body {
+    max-width: 600px;
+    line-height: 1.4;
+}
+
+
+#panel_channels {
+    width: 180px;
+    float: left;
+}
+#panel_channels {
+
+}
+#panel_channels ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+#panel_channels li {
+    cursor: pointer;
+    padding: 0.5em 0.25em;
+    transition-property: background;
+    transition-duration: 0.1s;
+}
+#panel_channels li:hover {
+    background-color: #eee;
+}
+#panel_channels li.active {
+    background-color: black;
+    color: white;
+}
+#panel_channels .label {
+    text-transform: uppercase;
+    font-size: 12px;
+    padding-left: 0.25em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    opacity: 0.5;
+}
+#panel_channels .label:first-child {
+    margin-top: 0;
+}
+
+#panel_messages {
+    padding-left: 190px;
+}
+
+#channel_messages_list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    clear: right;
+}
+#channel_messages_list li {
+    margin: 0 0 10px;
+    padding: 0.5em;
+    max-width: 600px
+}
+#channel_messages_list li.box-outbox {
+    background: #eee;
+}
+.ListItem time {
+    font-size: 12px;
+    opacity: 0.5;
+}
+#new_message_form {
+    margin-bottom: 10px;
+    max-width: 600px;
+}
+#send_message_button {
+    margin-bottom: 10px;
+}
+
