@@ -1,0 +1,14 @@
+body {
+    background: #f8f8f8;
+}
+.StringInput-input {
+    font-size: 1.1em;
+    padding: 0.5em;
+    resize: none;
+    color: #111111;
+}
+
+#send_message_button {
+    margin: 0;
+    float: right;
+}

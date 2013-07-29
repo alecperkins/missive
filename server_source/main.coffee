@@ -4,14 +4,16 @@ index_file_content = """
 <head>
     <title>BTMessage</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <!--link href="./main.css" type="text/css" rel="stylesheet"-->
+    <link href="/ui/doodad-0.0.0-dev.css" type="text/css" rel="stylesheet">
+    <link href="/ui/main.css" type="text/css" rel="stylesheet">
 </head>
 <body>
     <div id="app">Loading&hellip;</div>
     <script src="/ui/zepto-1.0.js"></script>
     <script src="/ui/underscore-1.5.1.js"></script>
     <script src="/ui/backbone-1.0.0.js"></script>
-    <script src="/ui/Layout.js"></script>
+    <script src="/ui/doodad-0.0.0-dev.js"></script>
+    <script src="/ui/markdown.js"></script>
     <script src="/ui/main.js"></script>
 </body>
 </html>
@@ -83,13 +85,15 @@ class Channel
         messages = []
         if @has_inbox
             inbox_files = fs.readdirSync(@inbox_folder)
-            for f in inbox_files
-                unless f[0] is '.'
+            console.log inbox_files
+            inbox_files.forEach (f) =>
+                if f?[0] isnt '.'
                     messages.push(new Message(@inbox_folder, f))
         if @has_outbox
             outbox_files = fs.readdirSync(@outbox_folder)
-            for f in outbox_files
-                unless f[0] is '.'
+            console.log outbox_files
+            outbox_files.forEach (f) =>
+                if f?[0] isnt '.'
                     messages.push(new Message(@outbox_folder, f))
         messages.sort (a, b) -> b.date - a.date
         return messages
@@ -98,6 +102,7 @@ class Channel
 
 class Message
     constructor: (@box_folder, @name) ->
+        console.log @box_folder, @name
         @_path = path.join(@box_folder, @name)
         [orig, year, month, day, hour, minute, second, rest...] = @name.match(/(\d+)-(\d+)-(\d+)T(\d+)-(\d+)-(\d+)Z.txt/)
         @date = new Date("#{ year }-#{ month }-#{ day }T#{ hour }:#{ minute }:#{ second }Z")
