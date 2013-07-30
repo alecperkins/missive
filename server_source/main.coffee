@@ -2,7 +2,7 @@ index_file_content = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BTMessage</title>
+    <title>Missive</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link href="/ui/doodad-0.0.0-dev.css" type="text/css" rel="stylesheet">
     <link href="/ui/main.css" type="text/css" rel="stylesheet">
@@ -59,7 +59,7 @@ app.get '/', (req, res) ->
 
 # Data helpers
 
-DATA_FOLDER = path.join(process.env.HOME, 'btmessage_data')
+DATA_FOLDER = path.join(process.env.HOME, 'missive_data')
 
 
 

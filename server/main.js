@@ -4,7 +4,7 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __slice = [].slice;
 
-  index_file_content = "<!DOCTYPE html>\n<html>\n<head>\n    <title>BTMessage</title>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n    <link href=\"/ui/doodad-0.0.0-dev.css\" type=\"text/css\" rel=\"stylesheet\">\n    <link href=\"/ui/main.css\" type=\"text/css\" rel=\"stylesheet\">\n</head>\n<body>\n    <div id=\"app\">Loading&hellip;</div>\n    <script src=\"/ui/zepto-1.0.js\"></script>\n    <script src=\"/ui/underscore-1.5.1.js\"></script>\n    <script src=\"/ui/backbone-1.0.0.js\"></script>\n    <script src=\"/ui/doodad-0.0.0-dev.js\"></script>\n    <script src=\"/ui/markdown.js\"></script>\n    <script src=\"/ui/main.js\"></script>\n</body>\n</html>";
+  index_file_content = "<!DOCTYPE html>\n<html>\n<head>\n    <title>Missive</title>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n    <link href=\"/ui/doodad-0.0.0-dev.css\" type=\"text/css\" rel=\"stylesheet\">\n    <link href=\"/ui/main.css\" type=\"text/css\" rel=\"stylesheet\">\n</head>\n<body>\n    <div id=\"app\">Loading&hellip;</div>\n    <script src=\"/ui/zepto-1.0.js\"></script>\n    <script src=\"/ui/underscore-1.5.1.js\"></script>\n    <script src=\"/ui/backbone-1.0.0.js\"></script>\n    <script src=\"/ui/doodad-0.0.0-dev.js\"></script>\n    <script src=\"/ui/markdown.js\"></script>\n    <script src=\"/ui/main.js\"></script>\n</body>\n</html>";
 
   express = require('express');
 
@@ -42,7 +42,7 @@
     return res.end();
   });
 
-  DATA_FOLDER = path.join(process.env.HOME, 'btmessage_data');
+  DATA_FOLDER = path.join(process.env.HOME, 'missive_data');
 
   Channel = (function() {
     function Channel(name) {
