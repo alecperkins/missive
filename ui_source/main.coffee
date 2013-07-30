@@ -69,8 +69,12 @@ class MessageListItem extends ListItem
                 return "#{ n }"
             return "#{ d.getFullYear() }-#{ d.getMonth() + 1 }-#{ d.getDate() } #{ d.getHours() }:#{ _pad(d.getMinutes()) }:#{ _pad(d.getSeconds()) }"
 
+        from = if @model.get('box') is 'inbox' then @model.channel.get('name') else 'me'
+
         @$el.html """
-            <time datetime="#{ @model.get('date') }">#{ _format(@model.get('date')) }</time>
+            <div class="meta">
+                <span class="from">#{ from }</span><time datetime="#{ @model.get('date') }">#{ _format(@model.get('date')) }</time>
+            </div>
             <div class="body">
                 #{ markdown.toHTML(@model.get('body')) }
             </div>
@@ -117,6 +121,10 @@ withinRange = (n, min, max) ->
 
 active_channel = new Channel()
 active_channel_messages = new Collection()
+
+active_channel_messages.on 'sync', ->
+    active_channel_messages.each (msg) ->
+        msg.channel = active_channel
 
 activateChannel = (channel) ->
     active_channel.set(channel.toJSON())

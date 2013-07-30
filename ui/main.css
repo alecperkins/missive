@@ -83,9 +83,13 @@ body {
 #channel_messages_list li.box-outbox {
     background: #eee;
 }
-.ListItem time {
+.ListItem .meta {
     font-size: 12px;
     opacity: 0.5;
+}
+
+.ListItem .meta time {
+    float: right;
 }
 #new_message_form {
     margin-bottom: 10px;
