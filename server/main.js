@@ -51,16 +51,16 @@
       this.toJSON = __bind(this.toJSON, this);
       this.inbox_folder = path.join(DATA_FOLDER, this.name, 'inbox');
       this.outbox_folder = path.join(DATA_FOLDER, this.name, 'outbox');
-      this.has_inbox = fs.existsSync(this.inbox_folder);
-      this.has_outbox = fs.existsSync(this.outbox_folder);
+      this.inbox_count = this._countBox(this.inbox_folder);
+      this.outbox_count = this._countBox(this.outbox_folder);
       this.url = "/channels/" + this.name;
       this.messages_url = "/channels/" + this.name + "/messages";
     }
 
     Channel.prototype.toJSON = function() {
       return {
-        has_inbox: this.has_inbox,
-        has_outbox: this.has_outbox,
+        inbox_count: this.inbox_count,
+        outbox_count: this.outbox_count,
         url: this.url,
         messages_url: this.messages_url,
         name: this.name
@@ -72,7 +72,7 @@
         _this = this;
 
       messages = [];
-      if (this.has_inbox) {
+      if (this.inbox_count != null) {
         inbox_files = fs.readdirSync(this.inbox_folder);
         console.log(inbox_files);
         inbox_files.forEach(function(f) {
@@ -81,7 +81,7 @@
           }
         });
       }
-      if (this.has_outbox) {
+      if (this.outbox_count != null) {
         outbox_files = fs.readdirSync(this.outbox_folder);
         console.log(outbox_files);
         outbox_files.forEach(function(f) {
@@ -94,6 +94,19 @@
         return b.date - a.date;
       });
       return messages;
+    };
+
+    Channel.prototype._countBox = function(box_folder) {
+      var box_files;
+
+      if (!fs.existsSync(box_folder)) {
+        return null;
+      }
+      box_files = fs.readdirSync(box_folder);
+      box_files = box_files.filter(function(f) {
+        return (f != null ? f[0] : void 0) !== '.';
+      });
+      return box_files.length;
     };
 
     return Channel;
@@ -151,9 +164,9 @@
         return "" + n;
       };
       now = new Date();
-      year = now.getFullYear();
-      month = _pad(now.getMonth() + 1);
-      day = _pad(now.getDate());
+      year = now.getUTCFullYear();
+      month = _pad(now.getUTCMonth() + 1);
+      day = _pad(now.getUTCDate());
       hour = _pad(now.getUTCHours());
       minute = _pad(now.getUTCMinutes());
       second = _pad(now.getUTCSeconds());

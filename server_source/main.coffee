@@ -67,15 +67,15 @@ class Channel
     constructor: (@name) ->
         @inbox_folder = path.join(DATA_FOLDER, @name, 'inbox')
         @outbox_folder = path.join(DATA_FOLDER, @name, 'outbox')
-        @has_inbox = fs.existsSync(@inbox_folder)
-        @has_outbox = fs.existsSync(@outbox_folder)
+        @inbox_count = @_countBox(@inbox_folder)
+        @outbox_count = @_countBox(@outbox_folder)
         @url = "/channels/#{ @name }"
         @messages_url = "/channels/#{ @name }/messages"
 
     toJSON: =>
         return {
-            has_inbox       : @has_inbox
-            has_outbox      : @has_outbox
+            inbox_count     : @inbox_count
+            outbox_count    : @outbox_count
             url             : @url
             messages_url    : @messages_url
             name            : @name
@@ -83,13 +83,13 @@ class Channel
 
     loadMessages: =>
         messages = []
-        if @has_inbox
+        if @inbox_count?
             inbox_files = fs.readdirSync(@inbox_folder)
             console.log inbox_files
             inbox_files.forEach (f) =>
                 if f?[0] isnt '.'
                     messages.push(new Message(@inbox_folder, f))
-        if @has_outbox
+        if @outbox_count?
             outbox_files = fs.readdirSync(@outbox_folder)
             console.log outbox_files
             outbox_files.forEach (f) =>
@@ -98,7 +98,12 @@ class Channel
         messages.sort (a, b) -> b.date - a.date
         return messages
 
-
+    _countBox: (box_folder) ->
+        if not fs.existsSync(box_folder)
+            return null
+        box_files = fs.readdirSync(box_folder)
+        box_files = box_files.filter (f) -> f?[0] isnt '.'
+        return box_files.length
 
 class Message
     constructor: (@box_folder, @name) ->

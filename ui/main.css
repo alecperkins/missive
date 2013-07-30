@@ -29,9 +29,6 @@ body {
     width: 180px;
     float: left;
 }
-#panel_channels {
-
-}
 #panel_channels ul {
     list-style-type: none;
     padding: 0;
@@ -49,6 +46,16 @@ body {
 #panel_channels li.active {
     background-color: black;
     color: white;
+}
+#panel_channels li .count {
+    text-transform: uppercase;
+    font-size: 12px;
+    float: right;
+    opacity: 0.5;
+    margin-top: 0.25em;
+}
+#panel_channels li.active .count {
+    opacity: 1;
 }
 #panel_channels .label {
     text-transform: uppercase;

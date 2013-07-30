@@ -17,15 +17,14 @@ class Channel extends Model
             cb()
 
     getType: ->
-        if @get('has_inbox')
-            if @get('has_outbox')
+        if @get('inbox_count')?
+            if @get('outbox_count')?
                 return 'message'
             return 'subscription'
         return 'broadcast'
 
 class ChannelCollection extends Collection
     model: Channel
-
 
 
 active_channel = null
@@ -43,11 +42,15 @@ class ListItem extends View
 
 class ChannelListItem extends ListItem
     render: ->
-        if @model.get('has_inbox')
+        total = 0
+        if @model.get('inbox_count')?
+            total += @model.get('inbox_count')
             @$el.addClass('has_inbox')
-        if @model.get('has_outbox')
-            @$el.addClass('has_outbox')
+        if @model.get('outbox_count')
+            total += @model.get('outbox_count')
+            @$el.addClass('has_outbox')?
         @$el.text(@model.get('name'))
+        @$el.append("<span class='count'>#{ total }</span>")
         return super
     events:
         'click': '_activate'
