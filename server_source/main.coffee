@@ -128,9 +128,9 @@ class Message
                 return "0#{ n }"
             return "#{ n }"
         now = new Date()
-        year    = now.getFullYear()
-        month   = _pad(now.getMonth() + 1)
-        day     = _pad(now.getDate())
+        year    = now.getUTCFullYear()
+        month   = _pad(now.getUTCMonth() + 1)
+        day     = _pad(now.getUTCDate())
         hour    = _pad(now.getUTCHours())
         minute  = _pad(now.getUTCMinutes())
         second  = _pad(now.getUTCSeconds())
