@@ -16,7 +16,7 @@ Each contact — *message channel* — gets a folder that contains and inbox fol
 * [BitTorrent Sync](http://labs.bittorrent.com/experiments/sync.html).
 * [node.js](http://nodejs.org/)
 
-### Set up
+### Setup
 
 1. Clone the repo to wherever you like: `$ git clone git@github.com:alecperkins/missive.git`
 2. Install the dependencies: `$ npm install`
