@@ -14,6 +14,7 @@ index_file_content = """
     <script src="/ui/backbone-1.0.0.js"></script>
     <script src="/ui/doodad-0.0.0-dev.js"></script>
     <script src="/ui/markdown.js"></script>
+    <script src="/ui/date.extensions.js"></script>
     <script src="/ui/main.js"></script>
 </body>
 </html>

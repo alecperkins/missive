@@ -60,6 +60,8 @@ class ChannelListItem extends ListItem
         @$el.addClass('active')
         activateChannel(@model)
 
+ONE_WEEK = 1000 * 60 * 24 * 7
+
 class MessageListItem extends ListItem
     render: ->
         @$el.addClass("box-#{ @model.get('box') }")
@@ -70,13 +72,21 @@ class MessageListItem extends ListItem
                 if n < 10
                     return "0#{ n }"
                 return "#{ n }"
-            return "#{ d.getFullYear() }-#{ d.getMonth() + 1 }-#{ d.getDate() } #{ d.getHours() }:#{ _pad(d.getMinutes()) }:#{ _pad(d.getSeconds()) }"
+
+            if (new Date() - d) > ONE_WEEK
+                readable_time = "#{ d.getFullYear() }-#{ d.getMonth() + 1 }-#{ d.getDate() }"
+            else
+                readable_time = d.toRelativeTime()
+            return """
+                <time datetime="#{ date }" title="#{ d.toString() }">#{ readable_time }</time>
+            """
+
 
         from = if @model.get('box') is 'inbox' then @model.channel.get('name') else 'me'
 
         @$el.html """
             <div class="meta">
-                <span class="from">#{ from }</span><time datetime="#{ @model.get('date') }">#{ _format(@model.get('date')) }</time>
+                <span class="from">#{ from }</span>#{ _format(@model.get('date')) }
             </div>
             <div class="body">
                 #{ markdown.toHTML(@model.get('body')) }
