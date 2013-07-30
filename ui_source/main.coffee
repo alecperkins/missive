@@ -1,4 +1,6 @@
 
+$window = $(window)
+
 { Button, StringInput } = window.Doodad
 { View, Model, Collection } = window.Backbone
 
@@ -137,23 +139,26 @@ class NewMessageForm extends View
                 width: '100%'
                 height: MESSAGE_PANEL_DEFAULT_SIZE
             on:
-                focus: (si, val) ->
+                focus: (si, val) =>
                     send_message_button.show()
-                    _.defer ->
+                    _.defer =>
                         new_height = withinRange(si._ui.input[0].scrollHeight, 200, 500)
                         new_message_field.setSize(height: new_height)
+                        @_setListHeight()
 
-                blur: (si, val) ->
+                blur: (si, val) =>
                     unless val
                         send_message_button.hide()
                         _.defer -> new_message_field.setSize(height: MESSAGE_PANEL_DEFAULT_SIZE)
+                        @_setListHeight()
 
-            action: (si, value) ->
+            action: (si, value) =>
                 if value
                     new_height = withinRange(si._ui.input[0].scrollHeight, 200, 500)
-                    _.defer ->
+                    _.defer =>
                         send_message_button.enable()
                         new_message_field.setSize(height: new_height)
+                        @_setListHeight()
                 else
                     send_message_button.disable()
                     new_message_field.setSize(height: MESSAGE_PANEL_DEFAULT_SIZE)
@@ -183,8 +188,16 @@ class NewMessageForm extends View
         @$el.empty()
         @$el.append(@_new_message_field.render())
         @$el.append(@_send_message_button.render())
+        @_setListHeight()
+        
 
-
+    _setListHeight: =>
+        $list_el = $('#channel_messages_list')
+        _.defer ->
+            console.log 'updating list height'
+            height = $window.height() - $list_el.offset().top - 20
+            $list_el.css
+                height: height
 
 
 
