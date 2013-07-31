@@ -189,13 +189,14 @@ class NewMessageForm extends View
             label: 'Send Message'
             spinner: true
             enabled: false
-            action: ->
+            action: =>
                 new_message_field.disable()
-                active_channel.sendNewMessage new_message_field.value, ->
+                active_channel.sendNewMessage new_message_field.value, =>
                     console.log 'sent message'
                     send_message_button.disable().hide()
                     new_message_field.setValue('')
                     new_message_field.setSize(height: MESSAGE_PANEL_DEFAULT_SIZE)
+                    @_setListHeight()
 
         @_new_message_field = new_message_field
         @_send_message_button = send_message_button

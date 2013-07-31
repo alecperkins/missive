@@ -320,9 +320,10 @@
             console.log('sent message');
             send_message_button.disable().hide();
             new_message_field.setValue('');
-            return new_message_field.setSize({
+            new_message_field.setSize({
               height: MESSAGE_PANEL_DEFAULT_SIZE
             });
+            return _this._setListHeight();
           });
         }
       });
