@@ -126,7 +126,7 @@
 
   })(ListItem);
 
-  ONE_WEEK = 1000 * 60 * 24 * 7;
+  ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 
   MessageListItem = (function(_super) {
     __extends(MessageListItem, _super);

@@ -60,7 +60,7 @@ class ChannelListItem extends ListItem
         @$el.addClass('active')
         activateChannel(@model)
 
-ONE_WEEK = 1000 * 60 * 24 * 7
+ONE_WEEK = 1000 * 60 * 60 * 24 * 7
 
 class MessageListItem extends ListItem
     render: ->
