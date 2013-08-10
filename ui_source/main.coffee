@@ -65,34 +65,66 @@ ONE_WEEK = 1000 * 60 * 60 * 24 * 7
 class MessageListItem extends ListItem
     render: ->
         @$el.addClass("box-#{ @model.get('box') }")
+        console.log @model.attributes
+        message_date = new Date(@model.get('date'))
 
-        _format = (date) ->
-            d = new Date(date)
+        _renderDate = ->
             _pad = (n) ->
                 if n < 10
                     return "0#{ n }"
                 return "#{ n }"
 
-            if (new Date() - d) > ONE_WEEK
-                readable_time = "#{ d.getFullYear() }-#{ d.getMonth() + 1 }-#{ d.getDate() }"
+            if (new Date() - message_date) > ONE_WEEK
+                readable_time = "#{ message_date.getFullYear() }-#{ message_date.getMonth() + 1 }-#{ message_date.getDate() }"
             else
-                readable_time = d.toRelativeTime()
+                readable_time = message_date.toRelativeTime()
             return """
-                <time datetime="#{ date }" title="#{ d.toString() }">#{ readable_time }</time>
+                <time datetime="#{ message_date }" title="#{ message_date.toString() }">#{ readable_time }</time>
             """
 
+        _renderLink = ->
+            return """
+                <a class="permalink" href="/##{ message_date.getTime() }">∞</a>
+            """
 
         from = if @model.get('box') is 'inbox' then @model.channel.get('name') else 'me'
 
         @$el.html """
             <div class="meta">
-                <span class="from">#{ from }</span>#{ _format(@model.get('date')) }
+                <span class="from">#{ from }</span>
+                #{ _renderDate() }
             </div>
             <div class="body">
                 #{ markdown.toHTML(@model.get('body')) }
             </div>
         """
+        if @model.get('attachments_url')
+            @$el.addClass('has-attachments')
+            @_displayAttachments()
+
         return @el
+
+    _displayAttachments: =>
+        console.log '_displayAttachments'
+        $attachments_el = $('<ul class="attachments"></ul>')
+        @$el.append($attachments_el)
+        $.getJSON @model.get('attachments_url'), (attachments) ->
+            console.log attachments
+            attachments.forEach (attachment) ->
+                $attachments_el.append """
+                    <li class="attachment">#{ renderAttachmentContent(attachment) }</li>
+                """
+
+
+
+renderAttachmentContent = (attachment) ->
+    markup = "<a href='#{ attachment.url }' target='_blank'>"
+    if attachment.type.indexOf('image') is 0
+        markup += "<img src='#{ attachment.url }' title='#{ attachment.name }'>"
+    else
+        markup += attachment.name
+    markup += '</a>'
+    return markup
 
 
 

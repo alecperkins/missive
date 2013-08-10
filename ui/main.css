@@ -94,9 +94,27 @@ body {
     font-size: 12px;
     opacity: 0.5;
 }
-
-.ListItem .meta time {
+.ListItem .meta time, .ListItem .meta .permalink {
     float: right;
+}
+.ListItem .meta .permalink {
+    color: inherit;
+    text-decoration: none;
+    margin-left: 0.25em;
+}
+.ListItem .meta .permalink:hover {
+    text-decoration: underline;
+}
+.ListItem .attachments {
+    padding: 0;
+}
+.ListItem .attachment {
+    list-style-type: none;
+    display: inline-block;
+}
+.ListItem .attachment img {
+    max-width: 50px;
+    max-height: 50px;
 }
 #new_message_form {
     margin-bottom: 10px;
