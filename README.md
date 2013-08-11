@@ -35,7 +35,7 @@ The actual messages are exchanged via a single plain text file per message, with
                              +--------->   inbox/
 
 
-Because of the way BitTorrent works, Brando, Cooper, and Delilah will also exchange pieces of the message from Azureen with each other. If Brando in online and has already received a complete copy of the message, Cooper and Delilah will still receive the message even if Azureen is not online. However, since their access is read-only, any changes they make to their copy will not be propagated to the swarm.
+Because of the way BitTorrent works, Brando, Cooper, and Delilah will also exchange pieces of the message from Azureen with each other. If Brando is online and has already received a complete copy of the message, Cooper and Delilah will still receive the message even if Azureen is not online. However, since their access is read-only, any changes they make to their copy will not be propagated to the swarm.
 
 ### Security
 
