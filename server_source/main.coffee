@@ -149,6 +149,26 @@ class Channel
         box_files = box_files.filter (f, i) -> f?[0] isnt '.' and f.split('.').length > 1
         return box_files.length
 
+    sendMessage: (body) ->
+        _pad = (n) ->
+            if n < 10
+                return "0#{ n }"
+            return "#{ n }"
+        now = new Date()
+        year    = now.getUTCFullYear()
+        month   = _pad(now.getUTCMonth() + 1)
+        day     = _pad(now.getUTCDate())
+        hour    = _pad(now.getUTCHours())
+        minute  = _pad(now.getUTCMinutes())
+        second  = _pad(now.getUTCSeconds())
+        name = "#{ year }-#{ month }-#{ day }T#{ hour }-#{ minute }-#{ second }Z.txt"
+        message = new Message(this, @outbox_folder, name)
+        message.body = body
+        message.write()
+        return message
+
+
+
 class Message
     constructor: (@channel, @box_folder, @name) ->
         console.log @channel, @box_folder, @name
@@ -182,28 +202,10 @@ class Message
             date            : @date.toISOString()
             body            : @body
             url             : @_url
+            attachments_url : @_attachments_url
+            has_attachments : @_has_attachments
         }
-        if @_has_attachments
-            data.attachments_url = @_attachments_url
         return data
-
-    @create = (box_folder, body) ->
-        _pad = (n) ->
-            if n < 10
-                return "0#{ n }"
-            return "#{ n }"
-        now = new Date()
-        year    = now.getUTCFullYear()
-        month   = _pad(now.getUTCMonth() + 1)
-        day     = _pad(now.getUTCDate())
-        hour    = _pad(now.getUTCHours())
-        minute  = _pad(now.getUTCMinutes())
-        second  = _pad(now.getUTCSeconds())
-        name = "#{ year }-#{ month }-#{ day }T#{ hour }-#{ minute }-#{ second }Z.txt"
-        message = new Message(box_folder, name)
-        message.body = body
-        message.write()
-        return message
 
     loadAttachments: ->
         attachments = []
@@ -223,7 +225,11 @@ class Message
             return null
         return [file_path, fs.readFileSync(target_file)]
 
-
+    saveAttachment: (file_info) ->
+        unless fs.existsSync(@_attachment_path)
+            fs.mkdirSync(@_attachment_path)
+        target_path = path.join(@_attachment_path, file_info.name)
+        fs.renameSync(file_info.path, target_path)
 
 
 
@@ -258,8 +264,7 @@ app.get '/channels/:channel_name/:box', (req, res) ->
 app.get '/channels/:channel_name/:box/:message_id', (req, res) ->
     channel = new Channel(req.params.channel_name)
     message = channel.loadMessage(req.params.box, req.params.message_id)
-    JSONResponse(res, message?.toJSON() )
-
+    JSONResponse(res, message?.toJSON())
 
 app.get '/channels/:channel_name/:box/:message_id/attachments', (req, res) ->
     channel = new Channel(req.params.channel_name)
@@ -275,9 +280,16 @@ app.get '/channels/:channel_name/:box/:message_id/attachments/:attachment_path',
 # Create a new message in channel (only works if there is an outbox)
 app.post '/channels/:channel_name/messages', (req, res) ->
     channel = new Channel(req.params.channel_name)
-    message = Message.create(channel.outbox_folder, req.body.body)
+    message = channel.sendMessage(req.body.body)
     JSONResponse(res, message?.toJSON())
 
+# Create a new 
+app.post '/channels/:channel_name/:box/:message_id/attachments', (req, res) ->
+    channel = new Channel(req.params.channel_name)
+    message = channel.loadMessage(req.params.box, req.params.message_id)
+    incoming_file = req.files.file
+    message.saveAttachment(incoming_file)
+    JSONResponse(res, {})
 
 
 

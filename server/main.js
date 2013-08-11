@@ -172,6 +172,29 @@
       return box_files.length;
     };
 
+    Channel.prototype.sendMessage = function(body) {
+      var day, hour, message, minute, month, name, now, second, year, _pad;
+
+      _pad = function(n) {
+        if (n < 10) {
+          return "0" + n;
+        }
+        return "" + n;
+      };
+      now = new Date();
+      year = now.getUTCFullYear();
+      month = _pad(now.getUTCMonth() + 1);
+      day = _pad(now.getUTCDate());
+      hour = _pad(now.getUTCHours());
+      minute = _pad(now.getUTCMinutes());
+      second = _pad(now.getUTCSeconds());
+      name = "" + year + "-" + month + "-" + day + "T" + hour + "-" + minute + "-" + second + "Z.txt";
+      message = new Message(this, this.outbox_folder, name);
+      message.body = body;
+      message.write();
+      return message;
+    };
+
     return Channel;
 
   })();
@@ -224,35 +247,11 @@
         box: this._box,
         date: this.date.toISOString(),
         body: this.body,
-        url: this._url
+        url: this._url,
+        attachments_url: this._attachments_url,
+        has_attachments: this._has_attachments
       };
-      if (this._has_attachments) {
-        data.attachments_url = this._attachments_url;
-      }
       return data;
-    };
-
-    Message.create = function(box_folder, body) {
-      var day, hour, message, minute, month, name, now, second, year, _pad;
-
-      _pad = function(n) {
-        if (n < 10) {
-          return "0" + n;
-        }
-        return "" + n;
-      };
-      now = new Date();
-      year = now.getUTCFullYear();
-      month = _pad(now.getUTCMonth() + 1);
-      day = _pad(now.getUTCDate());
-      hour = _pad(now.getUTCHours());
-      minute = _pad(now.getUTCMinutes());
-      second = _pad(now.getUTCSeconds());
-      name = "" + year + "-" + month + "-" + day + "T" + hour + "-" + minute + "-" + second + "Z.txt";
-      message = new Message(box_folder, name);
-      message.body = body;
-      message.write();
-      return message;
     };
 
     Message.prototype.loadAttachments = function() {
@@ -283,6 +282,16 @@
         return null;
       }
       return [file_path, fs.readFileSync(target_file)];
+    };
+
+    Message.prototype.saveAttachment = function(file_info) {
+      var target_path;
+
+      if (!fs.existsSync(this._attachment_path)) {
+        fs.mkdirSync(this._attachment_path);
+      }
+      target_path = path.join(this._attachment_path, file_info.name);
+      return fs.renameSync(file_info.path, target_path);
     };
 
     return Message;
@@ -362,8 +371,18 @@
     var channel, message;
 
     channel = new Channel(req.params.channel_name);
-    message = Message.create(channel.outbox_folder, req.body.body);
+    message = channel.sendMessage(req.body.body);
     return JSONResponse(res, message != null ? message.toJSON() : void 0);
+  });
+
+  app.post('/channels/:channel_name/:box/:message_id/attachments', function(req, res) {
+    var channel, incoming_file, message;
+
+    channel = new Channel(req.params.channel_name);
+    message = channel.loadMessage(req.params.box, req.params.message_id);
+    incoming_file = req.files.file;
+    message.saveAttachment(incoming_file);
+    return JSONResponse(res, {});
   });
 
   http.createServer(app).listen(app.get('port'), function() {

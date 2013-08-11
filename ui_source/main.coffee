@@ -10,11 +10,17 @@ $window = $(window)
 
 
 class Channel extends Model
-    sendNewMessage: (body, cb) =>
-        console.log @get('messages_url'), body
-        $.post @get('messages_url'), { body: body }, (success) ->
-            active_channel_messages.fetch()
-            cb()
+    sendNewMessage: (body, attachments, cb) =>
+        console.log @get('messages_url'), body, attachments
+        $.post @get('messages_url'), { body: body }, (success) =>
+            new_message = JSON.parse(success)
+            done = ->
+                active_channel_messages.fetch()
+                cb()
+            if attachments.length > 0
+                @sendAttachments(new_message, attachments, done)
+            else
+                done()
 
     getType: ->
         if @get('inbox_count')?
@@ -22,6 +28,31 @@ class Channel extends Model
                 return 'message'
             return 'subscription'
         return 'broadcast'
+
+    sendAttachments: (message, attachments, callback) ->
+        num_sent = 0
+        _.each attachments, (file) ->
+            sendFile message.attachments_url, file, ->
+                num_sent += 1
+                if num_sent is attachments.length
+                    callback?()
+
+
+sendFile = (url, file, callback) ->
+    console.log url, file
+    xhr = new XMLHttpRequest()
+    xhr.open('POST', url, true)
+    xhr.upload.onprogress = (e) ->
+        if e.loaded is e.total
+            callback()
+
+    # Sending a form instead of just a blob or file so the Express bodyParser
+    # can do all the work.
+    form_data = new FormData()
+    form_data.append('file', file, file.name)
+    xhr.send(form_data)
+
+
 
 class ChannelCollection extends Collection
     model: Channel
@@ -98,7 +129,7 @@ class MessageListItem extends ListItem
                 #{ markdown.toHTML(@model.get('body')) }
             </div>
         """
-        if @model.get('attachments_url')
+        if @model.get('has_attachments')
             @$el.addClass('has-attachments')
             @_displayAttachments()
 
@@ -176,8 +207,28 @@ activateChannel = (channel) ->
     active_channel_messages.url = active_channel.get('messages_url')
     active_channel_messages.fetch()
 
-
-
+# TODO: Make this a doodad component
+class FilePicker extends View
+    className: 'FilePicker'
+    initialize: ->
+        @value = []
+    render: ->
+        @$el.html('<label>Attachments: <input type="file" multiple="true"></label>')
+        @delegateEvents()
+        return @el
+    events:
+        'change input': '_listFiles'
+    _listFiles: (e) -> @value = e.target.files
+    reset: ->
+        @value = []
+        @render()
+        return this
+    hide: ->
+        @$el.hide()
+        return this
+    show: ->
+        @$el.show()
+        return this
 
 class NewMessageForm extends View
     initialize: ->
@@ -194,6 +245,7 @@ class NewMessageForm extends View
             on:
                 focus: (si, val) =>
                     send_message_button.show()
+                    attachments_picker.show()
                     _.defer =>
                         new_height = withinRange(si._ui.input[0].scrollHeight, 200, 500)
                         new_message_field.setSize(height: new_height)
@@ -202,6 +254,7 @@ class NewMessageForm extends View
                 blur: (si, val) =>
                     unless val
                         send_message_button.hide()
+                        attachments_picker.hide()
                         _.defer -> new_message_field.setSize(height: MESSAGE_PANEL_DEFAULT_SIZE)
                         @_setListHeight()
 
@@ -223,16 +276,23 @@ class NewMessageForm extends View
             enabled: false
             action: =>
                 new_message_field.disable()
-                active_channel.sendNewMessage new_message_field.value, =>
+                active_channel.sendNewMessage new_message_field.value, attachments_picker.value, =>
                     console.log 'sent message'
                     send_message_button.disable().hide()
                     new_message_field.setValue('')
                     new_message_field.setSize(height: MESSAGE_PANEL_DEFAULT_SIZE)
+                    attachments_picker.reset()
+                    attachments_picker.hide()
                     @_setListHeight()
+
+        attachments_picker = new FilePicker
+            id: 'attachments_picker'
 
         @_new_message_field = new_message_field
         @_send_message_button = send_message_button
+        @_attachments_picker = attachments_picker
         send_message_button.hide()
+        attachments_picker.hide()
 
     render: =>
         if @model.getType() is 'subscription'
@@ -242,6 +302,7 @@ class NewMessageForm extends View
         @$el.empty()
         @$el.append(@_new_message_field.render())
         @$el.append(@_send_message_button.render())
+        @$el.append(@_attachments_picker.render())
         @_setListHeight()
         
 

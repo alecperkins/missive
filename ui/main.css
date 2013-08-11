@@ -123,4 +123,8 @@ body {
 #send_message_button {
     margin-bottom: 10px;
 }
-
+.FilePicker {
+    font-size: 12px;
+    margin-top: 10px;
+    cursor: pointer;
+}
