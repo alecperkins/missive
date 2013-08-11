@@ -6,8 +6,42 @@ A basic proof-of-concept of [BitTorrent Sync](http://labs.bittorrent.com/experim
 
 Each contact — *message channel* — gets a folder that contains and inbox folder and an outbox folder. The user adds the outbox for the contact to BT Sync as a master folder, and gives the recipient the read-only key. The other party then gives the user a read-only key for their outbox, which the user uses to add the channel inbox to BT Sync. It can also be used in a one-to-many capacity, through a *broadcast channel*, simply by sharing the read-only key to an outbox more widely. Likewise, users create *subscription channels* (the other end of the *broadcast* ones), by adding only an inbox to the channel’s folder.
 
+The actual messages are exchanged via a single plain text file per message, with the filename an ISO-like timestamp (adjusted to allow for OS filename character restrictions). Attachments MAY be added to the message by creating a folder with the same timestamp, and placing arbitrary files inside it. So, the file `2013-08-11T14-34-37Z.txt` contains the message, and the folder `2013-08-11T14-34-37Z/` contains related attachments.
+
+### One-to-one messaging
+
+
+    Azureen                              Brando
+      brando/                              azureen/
+        inbox/    <-------READ ONLY-------   outbox/
+        outbox/   --------READ ONLY------>   inbox/
+
+
+### One-to-many messaging
+
+
+                                       Brando
+                                         azureens-blog/
+    Azureen                  +--------->   inbox/
+      azureens-blog/         |
+        outbox/   -READ ONLY-+
+                             |         Cooper
+                             |           azureens-blog/
+                             +--------->   inbox/
+                             |
+                             |
+                             |         Delilah
+                             |           azureens-blog/
+                             +--------->   inbox/
+
+
+Because of the way BitTorrent works, Brando, Cooper, and Delilah will also exchange pieces of the message from Azureen with each other. If Brando in online and has already received a complete copy of the message, Cooper and Delilah will still receive the message even if Azureen is not online. However, since their access is read-only, any changes they make to their copy will not be propagated to the swarm.
+
+
 
 ## Installation
+
+This mechanism doesn’t actually require any software beyond BT Sync, just a text editor to create flat text files in folders. This project just provides a helpful interface for the process.
 
 ### Requires
 
