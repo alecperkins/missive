@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: #737373;
+    background-color: white;
+    margin: 0 auto;
+    max-width: 574px;
+    padding: 1em;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 1em;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+    font-weight: 500;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Missive - secure, decentralized, and distributed messaging using BitTorrent Sync</title>
+
+</head>
+<body>
+<h1>Missive</h1>
+
+<p>A basic proof-of-concept of <a href="http://labs.bittorrent.com/experiments/sync.html">BitTorrent Sync</a>-powered, distributed, secure messaging. Pull model, for now. Each user exchanges a read-only secret to an outbox. (A more public, write-only folder isn't possible, yet.)</p>
+
+<h2>Mechanism</h2>
+
+<p>Each contact — <em>message channel</em> — gets a folder that contains and inbox folder and an outbox folder. The user adds the outbox for the contact to BT Sync as a master folder, and gives the recipient the read-only key. The other party then gives the user a read-only key for their outbox, which the user uses to add the channel inbox to BT Sync. It can also be used in a one-to-many capacity, through a <em>broadcast channel</em>, simply by sharing the read-only key to an outbox more widely. Likewise, users create <em>subscription channels</em> (the other end of the <em>broadcast</em> ones), by adding only an inbox to the channel’s folder.</p>
+
+<p>The actual messages are exchanged via a single plain text file per message, with the filename an ISO-like timestamp (adjusted to allow for OS filename character restrictions). Attachments MAY be added to the message by creating a folder with the same timestamp, and placing arbitrary files inside it. So, the file <code>2013-08-11T14-34-37Z.txt</code> contains the message, and the folder <code>2013-08-11T14-34-37Z/</code> contains related attachments.</p>
+
+<h3>One-to-one messaging</h3>
+<pre><code>
+    Azureen                              Brando
+      brando/                              azureen/
+        inbox/    &lt;-------READ ONLY-------   outbox/
+        outbox/   --------READ ONLY------&gt;   inbox/
+
+</code></pre>
+
+<h3>One-to-many messaging</h3>
+<pre><code>
+
+
+                                       Brando
+                                         azureens-blog/
+    Azureen                  +---------&gt;   inbox/
+      azureens-blog/         |
+        outbox/   -READ ONLY-+
+                             |         Cooper
+                             |           azureens-blog/
+                             +---------&gt;   inbox/
+                             |
+                             |
+                             |         Delilah
+                             |           azureens-blog/
+                             +---------&gt;   inbox/
+
+</code></pre>
+
+<p>Because of the way BitTorrent works, Brando, Cooper, and Delilah will also exchange pieces of the message from Azureen with each other. If Brando in online and has already received a complete copy of the message, Cooper and Delilah will still receive the message even if Azureen is not online. However, since their access is read-only, any changes they make to their copy will not be propagated to the swarm.</p>
+
+<h3>Security</h3>
+
+<p>The messages are as secure as BT Sync is. All data is transferred using AES and 256-bit key based on a secret which is 20+ bytes. There is no centralized storage of any information, and no third party which can be compelled to give up data. For more information, see the BT Sync <a href="http://labs.bittorrent.com/experiments/sync/technology.html#security">technology page</a> and the <a href="http://forum.bittorrent.com/topic/16410-bittorrent-sync-faq/">FAQs</a>.</p>
+<p>The real security challenge with this system is the initial key exchange. This of course must be private, as anyone who knows the key may read the traffic. Currently, Missive has no way of conducting this exchange process. However, it could be done if BT Sync supported write-only keys.</p>
+
+<h2>Installation</h2>
+
+<p>This mechanism doesn’t actually require any software beyond BT Sync, just a text editor to create flat text files in folders. This project just provides a helpful interface for the process.</p>
+
+<p>The project is open source (public domain even) and <a href="https://github.com/alecperkins/missive">hosted on GitHub</a>.</p>
+
+<h3>Requires</h3>
+
+<p>(And assumed familiarity with)</p>
+
+<ul>
+<li><a href="http://labs.bittorrent.com/experiments/sync.html">BitTorrent Sync</a>.</li>
+<li><a href="http://nodejs.org/">node.js</a></li>
+</ul>
+
+
+<h3>Setup</h3>
+
+<ol>
+<li>Clone the repo to wherever you like:<br><code>$ git clone git@github.com:alecperkins/missive.git</code></li>
+<li>Install the dependencies:<br><code>$ npm install</code></li>
+<li>Create a base folder to store the message data (hardcoded to this for now, sorry):<br><code>~/missive_data</code>.</li>
+<li>Start the app:<code>$ node server/main.js</code> and visit <a href="http://localhost:3000"><code>localhost:3000</code></a>.</li>
+</ol>
+
+
+<h3>Usage</h3>
+
+<p>Obviously, Missive is only useful if there are channels set up. To add a <em>message</em>-type channel:</p>
+
+<ol>
+<li>Create a folder for a contact: <code>~/missive_data/&lt;contact&gt;</code>.</li>
+<li><p>Inside the contact folder, create an inbox and an outbox:</p>
+
+<pre><code> `~/missive_data/&lt;contact&gt;/inbox`
+ `~/missive_data/&lt;contact&gt;/outbox`
+</code></pre></li>
+<li><p>In BitTorrent Sync, add the contact outbox and give your contact the read-only secret.</p></li>
+<li>Add your contact inbox to BT Sync, using the read-only secret your contact gives you.</li>
+</ol>
+
+
+<p>To add a <em>broadcast</em> or <em>subscription</em> channel, simply omit the inbox or outbox, respectively. A lot of steps, unfortunately. Proper packaging will obviate the setup, and hopefully the pending <a href="http://forum.bittorrent.com/topic/18176-sync-api-wishlist/">BitTorrent Sync API</a> will take care of the usage steps, which can be automated.</p>
+
+<p><em>Note: channel names MUST be URL-friendly (for now).</em></p>
+
+<h2>As one-way channels</h2>
+
+<p>Since the process involves exchanging read-only keys with potentially asymmetric relationships, this could also be used for one-to-many messages (blogging, microblogging). Really, each contact is just a channel with an input and an output. Adding a channel that has only an outbox, then publicizing the read-only key, would be creating an outgoing channel to any number of readers. The readers subscribe to that channel by adding a contact with only an inbox. What's doubly neat is that read-only peers still exchange data (presumably unless they change their copy). This means the distributed benefit of BitTorrent is still in effect, and the originator of the message need not be online all the time for the message to spread to new subscribers. There is also no central point of failure — at least for messages that have already been sent. Also, multiple trusted users could contribute to the same channel by sharing the master key for the outbox.</p>
+
+<p>Try it out by creating a <code>~/missive_data/public-missive/inbox</code> folder and adding it to BT Sync with the key <code>B2CNYVXULNUVYH42J5DN6YTHJT6ESXOR3</code>. You don’t even need to set up the project, since the “protocol” is just flat text files in folders. Or, create a <code>~/missive_data/my-posts/outbox</code> folder, add it to BT Sync, and share the read-only key.</p>
+<hr>
+<p>
+    By <a href="http://alecperkins.net">Alec Perkins</a>
+</p>
+<script type="text/javascript">
+  var _gauges = _gauges || [];
+  (function() {
+    var t   = document.createElement('script');
+    t.type  = 'text/javascript';
+    t.async = true;
+    t.id    = 'gauges-tracker';
+    t.setAttribute('data-site-id', '5207dd06613f5d44a2000171');
+    t.src = '//secure.gaug.es/track.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(t, s);
+  })();
+</script>
+</body>
+</html>
