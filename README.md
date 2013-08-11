@@ -37,11 +37,19 @@ The actual messages are exchanged via a single plain text file per message, with
 
 Because of the way BitTorrent works, Brando, Cooper, and Delilah will also exchange pieces of the message from Azureen with each other. If Brando in online and has already received a complete copy of the message, Cooper and Delilah will still receive the message even if Azureen is not online. However, since their access is read-only, any changes they make to their copy will not be propagated to the swarm.
 
+### Security
+
+The messages are as secure as BT Sync is. All data is transferred using AES and 256-bit key based on a secret which is 20+ bytes. There is no centralized storage of any information, and no third party which can be compelled to give up data. For more information, see the [BT Sync technology page](http://labs.bittorrent.com/experiments/sync/technology.html#security) and the [FAQs](http://forum.bittorrent.com/topic/16410-bittorrent-sync-faq/).
+
+The real security challenge with this system is the initial key exchange. This of course must be private, as anyone who knows the key may read the traffic. Currently, Missive has no way of conducting this exchange process. However, it could be done if BT Sync supported write-only keys.
+
 
 
 ## Installation
 
 This mechanism doesn’t actually require any software beyond BT Sync, just a text editor to create flat text files in folders. This project just provides a helpful interface for the process.
+
+The UI project is open source (public domain even) and [hosted on GitHub](https://github.com/alecperkins/missive).
 
 ### Requires
 
