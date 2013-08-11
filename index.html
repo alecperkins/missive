@@ -149,6 +149,25 @@ sup {
 		page-break-inside: avoid;
 	}
 }
+#logo {
+    float: right;
+    margin: 0 0 1em 1em;
+    width: 194px;
+    height: 142px
+}
+@media screen and (max-width: 400px) {
+    h1 {
+        text-align: center;
+    }
+    #logo {
+        float: none;
+        display: block;
+        margin: 1em auto;
+    }
+    .diagram code {
+        font-size: 0.7em;
+    }
+}
 </style>
 <title>Missive - secure, decentralized, and distributed messaging using BitTorrent Sync</title>
 
@@ -156,6 +175,7 @@ sup {
 <body>
 <h1>Missive</h1>
 
+<img id="logo" src="./logo.svg">
 <p>A basic proof-of-concept of <a href="http://labs.bittorrent.com/experiments/sync.html">BitTorrent Sync</a>-powered, distributed, secure messaging. Pull model, for now. Each user exchanges a read-only secret to an outbox. (A more public, write-only folder isn't possible, yet.)</p>
 
 <h2>Mechanism</h2>
@@ -165,7 +185,7 @@ sup {
 <p>The actual messages are exchanged via a single plain text file per message, with the filename an ISO-like timestamp (adjusted to allow for OS filename character restrictions). Attachments MAY be added to the message by creating a folder with the same timestamp, and placing arbitrary files inside it. So, the file <code>2013-08-11T14-34-37Z.txt</code> contains the message, and the folder <code>2013-08-11T14-34-37Z/</code> contains related attachments.</p>
 
 <h3>One-to-one messaging</h3>
-<pre><code>
+<pre class="diagram"><code>
     Azureen                              Brando
       brando/                              azureen/
         inbox/    &lt;-------READ ONLY-------   outbox/
@@ -174,7 +194,7 @@ sup {
 </code></pre>
 
 <h3>One-to-many messaging</h3>
-<pre><code>
+<pre class="diagram"><code>
 
 
                                        Brando
