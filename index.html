@@ -155,6 +155,13 @@ sup {
     width: 194px;
     height: 142px
 }
+.screenshot {
+    float: right;
+    margin: 0 0 1em 1em;
+    max-width: 300px;
+    width: 100%;
+    border: 1px solid #ddd;
+}
 @media screen and (max-width: 400px) {
     h1 {
         text-align: center;
@@ -166,6 +173,14 @@ sup {
     }
     .diagram code {
         font-size: 0.7em;
+    }
+}
+@media screen and (max-width: 550px) {
+    .screenshot {
+        float: none;
+        display: block;
+        margin: 1em auto;
+        max-width: none;
     }
 }
 </style>
@@ -222,7 +237,9 @@ sup {
 
 <h2>Installation</h2>
 
-<p>This mechanism doesn’t actually require any software beyond BT Sync, just a text editor to create flat text files in folders. This project just provides a helpful interface for the process.</p>
+<img class="screenshot" src="./screenshot.png">
+
+<p>This mechanism doesn’t actually require any software beyond BT Sync, only a text editor to create flat text files in folders. This project just provides a helpful interface for the process. It uses a small `node.js` webserver to serve up a browser-based UI, traversing and reading the folder to load the data.</p>
 
 <p>The project is open source (public domain even) and <a href="https://github.com/alecperkins/missive">hosted on GitHub</a>.</p>
 
