@@ -74,8 +74,8 @@ app.get '/', (req, res) ->
 
 
 # Data helpers
-
-DATA_FOLDER = path.join(process.env.HOME, 'missive_data')
+USER_HOME_FOLDER = process.env.HOME or process.env.USERPROFILE
+DATA_FOLDER = path.join(USER_HOME_FOLDER, 'missive_data')
 
 
 
