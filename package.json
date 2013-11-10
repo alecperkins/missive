@@ -1,6 +1,4 @@
 {
     "dependencies": {
-        "express": "3.3.x",
-        "mime": "1.2.x"
     }
 }
