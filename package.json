@@ -1,4 +1,45 @@
 {
-    "dependencies": {
-    }
+  "name": "Missive",
+  "version": "0.2.0-dev",
+  "author": "Alec Perkins",
+  "description": "BitTorrent Sync-backed secure, distributed messaging.",
+  "website": "http://missiv.es",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alecperkins/missive.git"
+  },
+  "dependencies": {
+    "mime": "1.2.x",
+    "markdown": "~0.5.0",
+    "zepto": "0.0.4",
+    "backbone.marionette": "~1.1.0",
+    "underscore": "~1.5.2",
+    "backbone": "~1.1.0"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.6.3",
+    "grunt": "~0.4.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "mocha": "~1.14.0",
+    "should": "~2.0.2"
+  },
+  "license": {
+    "type": "Unlicense",
+    "url": "https://raw.github.com/alecperkins/missive/master/LICENSE"
+  },
+  "webkit": {
+    "plugin": false
+  },
+  "window": {
+    "icon": "visual/icon.png",
+    "show": true,
+    "toolbar": true,
+    "width": 1000,
+    "height": 660,
+    "position": "center",
+    "min_width": 400,
+    "min_height": 400
+  }
 }

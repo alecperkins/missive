@@ -4,3 +4,4 @@ node_modules
 _messages
 dist/*
 build/*
+Sample.app
