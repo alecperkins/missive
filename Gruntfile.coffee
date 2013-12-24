@@ -64,12 +64,14 @@ module.exports = (grunt) ->
                 filter  : (f_name) ->
                     return f_name.split('.').pop() isnt 'coffee'
 
-            # Copies the files to the .app package contents for dev purposes.
+            # Copies the built files to the .app package contents for dev
+            # purposes.
             forwatch:
                 expand  : true
                 cwd     : BUILD_DIR
                 src     : ['**/*']
                 dest    : WATCH_TARGET_DIR
+
 
     grunt.loadNpmTasks('grunt-node-webkit-builder')
     grunt.loadNpmTasks('grunt-contrib-coffee')
@@ -115,7 +117,3 @@ module.exports = (grunt) ->
         'coffee:watch'
         'watch'
     ]
-
-
-
-

@@ -14,10 +14,13 @@
     "zepto": "0.0.4",
     "backbone.marionette": "~1.1.0",
     "underscore": "~1.5.2",
-    "backbone": "~1.1.0"
+    "backbone": "~1.1.0",
+    "bittorrent-sync": "0.0.3",
+    "q": "~0.9.7"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
+    "fs-extra": "~0.6.4",
     "grunt": "~0.4.1",
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-contrib-copy": "~0.4.1",
@@ -32,9 +35,12 @@
   "webkit": {
     "plugin": false
   },
+  "scripts": {
+    "test": "node_modules/.bin/mocha --compilers coffee:coffee-script"
+  },
   "window": {
     "icon": "visual/icon.png",
-    "show": true,
+    "show": false,
     "toolbar": true,
     "width": 1000,
     "height": 660,

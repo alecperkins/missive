@@ -5,3 +5,4 @@ _messages
 dist/*
 build/*
 Sample.app
+source/apikey
